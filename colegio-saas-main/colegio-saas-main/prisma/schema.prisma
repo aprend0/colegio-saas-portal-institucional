@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SuperAdmin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Colegio {
+  id              Int      @id @default(autoincrement())
+  nombre          String
+  logo            String?
+  colorPrimario   String?
+  colorSecundario String?
+  activo          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  admin       Admin[]
+  contenido   Contenido[]
+  estudiantes Estudiante[]
+  docentes    Docente[]
+  grados      Grado[]
+  secciones   Seccion[]
+  cursos      Curso[]
+  matriculas  Matricula[]
+  notas       Nota[]
+  asistencias Asistencia[]
+  pagos       Pago[]
+  horarios    Horario[]
+}
+
+model Admin {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String
+  nombre   String
+  activo   Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Contenido {
+  id          Int     @id @default(autoincrement())
+  tipo        String
+  titulo      String
+  descripcion String
+  imagen      String?
+  activo      Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Estudiante {
+  id                Int       @id @default(autoincrement())
+  nombres           String
+  apellidos         String
+  dni               String?   @unique
+  fechaNacimiento   DateTime?
+  direccion         String?
+  telefono          String?
+  apoderado         String?
+  telefonoApoderado String?
+  activo            Boolean   @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  seccionId Int?
+  seccion   Seccion? @relation(fields: [seccionId], references: [id])
+
+  matriculas  Matricula[]
+  notas       Nota[]
+  asistencias Asistencia[]
+  pagos       Pago[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Docente {
+  id           Int     @id @default(autoincrement())
+  nombres      String
+  apellidos    String
+  dni          String? @unique
+  email        String?
+  telefono     String?
+  especialidad String?
+  activo       Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  cursos   Curso[]
+  horarios Horario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Grado {
+  id     Int     @id @default(autoincrement())
+  nombre String
+  nivel  String?
+  activo Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  secciones Seccion[]
+  cursos    Curso[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([colegioId, nombre])
+}
+
+model Seccion {
+  id     Int     @id @default(autoincrement())
+  nombre String
+  turno  String?
+  activo Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  gradoId Int
+  grado   Grado @relation(fields: [gradoId], references: [id])
+
+  estudiantes Estudiante[]
+  matriculas  Matricula[]
+  asistencias Asistencia[]
+  horarios    Horario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([colegioId, gradoId, nombre])
+}
+
+model Curso {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  activo      Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  gradoId Int?
+  grado   Grado? @relation(fields: [gradoId], references: [id])
+
+  docenteId Int?
+  docente   Docente? @relation(fields: [docenteId], references: [id])
+
+  notas       Nota[]
+  asistencias Asistencia[]
+  horarios    Horario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Matricula {
+  id     Int      @id @default(autoincrement())
+  anio   Int
+  estado String   @default("ACTIVA")
+  fecha  DateTime @default(now())
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  estudianteId Int
+  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
+
+  seccionId Int
+  seccion   Seccion @relation(fields: [seccionId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([estudianteId, anio])
+}
+
+model Nota {
+  id           Int     @id @default(autoincrement())
+  periodo      String
+  competencia  String?
+  calificacion Float
+  observacion  String?
+  activo       Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  estudianteId Int
+  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
+
+  cursoId Int
+  curso   Curso @relation(fields: [cursoId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([estudianteId, cursoId, periodo])
+}
+
+model Asistencia {
+  id          Int      @id @default(autoincrement())
+  fecha       DateTime
+  estado      String   @default("PRESENTE")
+  observacion String?
+  activo      Boolean  @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  estudianteId Int
+  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
+
+  seccionId Int?
+  seccion   Seccion? @relation(fields: [seccionId], references: [id])
+
+  cursoId Int?
+  curso   Curso? @relation(fields: [cursoId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([colegioId])
+  @@index([estudianteId])
+  @@index([seccionId])
+  @@index([cursoId])
+}
+
+model Pago {
+  id               Int       @id @default(autoincrement())
+  concepto         String
+  descripcion      String?
+  monto            Float
+  estado           String    @default("PENDIENTE")
+  fechaVencimiento DateTime?
+  fechaPago        DateTime?
+  metodoPago       String?
+  comprobante      String?
+  observacion      String?
+  activo           Boolean   @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  estudianteId Int
+  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([colegioId])
+  @@index([estudianteId])
+  @@index([estado])
+}
+
+model Horario {
+  id         Int     @id @default(autoincrement())
+  dia        String
+  horaInicio String
+  horaFin    String
+  aula       String?
+  activo     Boolean @default(true)
+
+  colegioId Int
+  colegio   Colegio @relation(fields: [colegioId], references: [id])
+
+  seccionId Int
+  seccion   Seccion @relation(fields: [seccionId], references: [id])
+
+  cursoId Int
+  curso   Curso @relation(fields: [cursoId], references: [id])
+
+  docenteId Int?
+  docente   Docente? @relation(fields: [docenteId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([colegioId])
+  @@index([seccionId])
+  @@index([cursoId])
+  @@index([docenteId])
+}

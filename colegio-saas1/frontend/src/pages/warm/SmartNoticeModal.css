@@ -1,0 +1,243 @@
+﻿.smart-notice-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(53, 37, 28, 0.32);
+  backdrop-filter: blur(12px);
+  animation: smartFadeIn 0.25s ease;
+}
+
+.smart-notice-card {
+  position: relative;
+  width: min(760px, 100%);
+  overflow: hidden;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at top right, rgba(234, 182, 107, 0.34), transparent 34%),
+    linear-gradient(135deg, #fffaf4, #fff1df);
+  border: 1px solid var(--border);
+  box-shadow: 0 34px 100px rgba(80, 45, 24, 0.32);
+  padding: 30px;
+  animation: smartPop 0.32s ease;
+}
+
+.smart-notice-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--terracotta-dark);
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.smart-notice-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.smart-notice-top span {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #fff0df;
+  color: var(--terracotta-dark);
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.smart-notice-top h2 {
+  margin: 16px 0 8px;
+  max-width: 540px;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+  color: var(--text);
+}
+
+.smart-notice-top p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.smart-notice-badge {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--terracotta), var(--amber));
+  color: white;
+  font-weight: 950;
+  box-shadow: 0 18px 40px rgba(198, 93, 53, 0.28);
+}
+
+.smart-notice-visual {
+  position: relative;
+  height: 130px;
+  margin: 26px -30px 22px;
+  background:
+    linear-gradient(90deg, rgba(198, 93, 53, 0.14), rgba(234, 182, 107, 0.22)),
+    #fff7ed;
+  border-top: 1px solid rgba(234, 216, 199, 0.88);
+  border-bottom: 1px solid rgba(234, 216, 199, 0.88);
+  overflow: hidden;
+}
+
+.smart-ribbon {
+  position: absolute;
+  left: 34px;
+  top: 38px;
+  padding: 15px 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+  color: var(--terracotta-dark);
+  font-size: 28px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.smart-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.orb-one {
+  width: 160px;
+  height: 160px;
+  right: 70px;
+  top: -55px;
+  background: rgba(198, 93, 53, 0.18);
+}
+
+.orb-two {
+  width: 100px;
+  height: 100px;
+  right: 210px;
+  bottom: -40px;
+  background: rgba(111, 143, 114, 0.2);
+}
+
+.smart-notice-body {
+  position: relative;
+  z-index: 2;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+}
+
+.smart-notice-body p {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.smart-notice-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+.smart-primary-btn,
+.smart-secondary-btn {
+  border: 0;
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-weight: 950;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.smart-primary-btn {
+  color: white;
+  background: linear-gradient(135deg, var(--terracotta), #e08148);
+  box-shadow: 0 18px 40px rgba(198, 93, 53, 0.26);
+}
+
+.smart-secondary-btn {
+  color: var(--terracotta-dark);
+  background: #fff0df;
+}
+
+.smart-primary-btn:hover,
+.smart-secondary-btn:hover {
+  transform: translateY(-2px);
+}
+
+.smart-notice-foot {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+@keyframes smartFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes smartPop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 720px) {
+  .smart-notice-card {
+    padding: 24px;
+  }
+
+  .smart-notice-visual {
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+
+  .smart-notice-top {
+    display: block;
+  }
+
+  .smart-notice-badge {
+    margin-top: 18px;
+  }
+
+  .smart-notice-actions {
+    justify-content: stretch;
+  }
+
+  .smart-primary-btn,
+  .smart-secondary-btn {
+    width: 100%;
+  }
+}

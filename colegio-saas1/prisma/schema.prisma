@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SuperAdmin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Colegio {
+  id              Int         @id @default(autoincrement())
+  nombre          String
+  logo            String?
+  colorPrimario   String?     @default("#92462F")
+  colorSecundario String?     @default("#BA9E7E")
+  colorFondo      String?     @default("#FAFAF8")
+  colorNavbar     String?     @default("#FAFAF8")
+  colorTexto      String?     @default("#333333")
+  colorFooter     String?     @default("#333333")
+  imagenesFondo   String?
+  slogan          String?
+  descripcion     String?
+  direccion       String?
+  telefono        String?
+  email           String?
+  ugel            String?
+  activo          Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  admin           Admin[]
+  contenido       Contenido[]
+  galeria         Galeria[]
+}
+
+model Galeria {
+  id        Int      @id @default(autoincrement())
+  titulo    String
+  imagen    String   @db.Text
+  categoria String?
+  colegioId Int
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  colegio   Colegio  @relation(fields: [colegioId], references: [id])
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  nombre    String
+  activo    Boolean  @default(true)
+  colegioId Int
+  colegio   Colegio  @relation(fields: [colegioId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Contenido {
+  id          Int      @id @default(autoincrement())
+  tipo        String
+  titulo      String
+  descripcion String
+  imagen      String?
+  activo      Boolean  @default(true)
+  colegioId   Int
+  colegio     Colegio  @relation(fields: [colegioId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  url       String
+  colegioId Int
+  createdAt DateTime @default(now())
+}
